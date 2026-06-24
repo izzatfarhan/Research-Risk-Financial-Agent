@@ -3,7 +3,7 @@
 # backend/src/graph.py
 from langgraph.graph import StateGraph, START, END
 from src.state import FinancialState
-from src.agents.sentiment.py import news_research_node
+from src.agents.sentiment import news_research_node
 
 # 1. Initialize the workflow builder with our schema
 workflow = StateGraph(FinancialState)
