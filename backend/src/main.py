@@ -57,9 +57,10 @@ async def analyze_ticker(payload: TickerRequest):
     try:
         final_state = fin_sentinel_engine.invoke(initial_state)
         return {
-            "success": True,
+          "success": True,
             "ticker": final_state["ticker"],
-            "sentiment_metrics": final_state["sentiment_metrics"],  # Returns the model metrics
+            "sentiment_metrics": final_state["sentiment_metrics"],
+            "fundamental_metrics": final_state["extracted_metrics"], # Stream the new node's outputs
             "raw_news_extracted": final_state["raw_news"]
         }
     except Exception as e:
