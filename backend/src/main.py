@@ -1,25 +1,65 @@
-from fastapi import FastAPI
+# backend/src/main.py
+import os
+from pathlib import Path
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from src.graph import fin_sentinel_app  # Your LangGraph instance
+from dotenv import load_dotenv
 
-app = FastAPI()
+# Ensure environment variables load for the server instance
+root_dir = Path(__file__).resolve().parent.parent.parent
+load_dotenv(dotenv_path=root_dir / ".env")
 
-# Allow Next.js to talk to FastAPI locally
+# Import your compiled LangGraph engine
+from src.graph import fin_sentinel_engine
+
+app = FastAPI(
+    title="FinSentinel AI Engine API",
+    description="Production-grade API wrapper for multi-agent financial analytics",
+    version="0.1.0"
+)
+
+# Enable CORS so your future Next.js app (running on port 3000) can securely connect
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Define the request payload structure using Pydantic
 class TickerRequest(BaseModel):
     ticker: str
 
+@app.get("/")
+def read_root():
+    return {"status": "healthy", "engine": "FinSentinel LangGraph Multi-Agent Active"}
+
 @app.post("/api/analyze")
-async def analyze_ticker(req: TickerRequest):
-    # Invoke your LangGraph state machine!
-    initial_state = {"ticker": req.ticker, "raw_news": [], "financial_metrics": {}, "risk_analysis": [], "final_memo": {}}
-    result = fin_sentinel_app.invoke(initial_state)
-    return result
+async def analyze_ticker(payload: TickerRequest):
+    ticker_upper = payload.ticker.upper().strip()
+    if not ticker_upper:
+        raise HTTPException(status_code=400, detail="Ticker symbol cannot be empty")
+        
+    print(f"\n📥 [API] Received analysis request for ticker: {ticker_upper}")
+    
+    # Initialize the base state to feed into the graph
+    initial_state = {
+        "ticker": ticker_upper,
+        "raw_news": [],
+        "extracted_metrics": {},
+        "final_memo": {}
+    }
+    
+    try:
+        # Run the state machine synchronously for now
+        final_state = fin_sentinel_engine.invoke(initial_state)
+        return {
+            "success": True,
+            "ticker": final_state["ticker"],
+            "raw_news_extracted": final_state["raw_news"]
+        }
+    except Exception as e:
+        print(f"❌ [API Error] Graph execution failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Graph Execution Error: {str(e)}")
