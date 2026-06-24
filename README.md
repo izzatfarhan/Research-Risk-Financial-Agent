@@ -41,3 +41,34 @@ Instead of fetching a single PDF, the backend spins up a team of agents that col
 - **Graph Logic**: Uses a **Conditional Edge** (i.e., a router) to decide which agent runs next based on the data from the previous agent.
 - **Data Flow**: Custom State (Pydantic) to pass JSON objects between agents.
 - **LLM**: Local model (Ollama/Phi-3) for privacy and cost savings.
+
+
+## FinSentinel System Architecture
+
+            [ User Input Ticker ]
+                        │
+                        ▼
+             ┌─────────────────────┐
+             │  Supervisor Agent   │◀───────────────────────|
+             └─────────────────────┘                         │
+              /        │          \                          │
+             ▼         ▼           ▼                         │
+   ┌───────────┐ ┌───────────┐ ┌───────────┐                 │
+   │ FundaBot  │ │ VisionBot │ │ EchoBot   │                 │
+   │ (Earnings │ │ (Charts   │ │ (Realtime │                 │
+   │  & SEC)   │ │ &Technical)│ News Semantics)             │
+   └───────────┘ └───────────┘ └───────────┘                 │
+             \         │          /                          │
+              ▼        ▼         ▼                           │
+             ┌─────────────────────┐                         │
+             │   Synthesis Node    │                         │
+             └─────────────────────┘                         │
+                        │                                    │
+                        ▼                                    │
+             ┌─────────────────────┐  No (Refine)            │
+             │ Human-in-the-Loop   ├─────────────────────────┘
+             │      Approve?       │
+             └─────────────────────┘
+                        │ Yes
+                        ▼
+               [ Generated Memo ]
