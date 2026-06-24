@@ -4,20 +4,23 @@
 from langgraph.graph import StateGraph, START, END
 from src.state import FinancialState
 from src.agents.sentiment import news_research_node
-from src.agents.fundamental import fundamental_analyst_node  # Import new node
+from src.agents.fundamental import fundamental_analyst_node
+from src.agents.synthesis import synthesis_analyst_node  # New Import
 
 # 1. Initialize the workflow builder
 workflow = StateGraph(FinancialState)
 
-# 2. Add BOTH nodes to the graph network
+# 2. Add all THREE nodes to the network
 workflow.add_node("news_researcher", news_research_node)
 workflow.add_node("fundamental_analyst", fundamental_analyst_node)
+workflow.add_node("synthesis_analyst", synthesis_analyst_node) # Add node
 
-# 3. Establish the sequential execution path
+# 3. Establish the execution path
 workflow.add_edge(START, "news_researcher")
-workflow.add_edge("news_researcher", "fundamental_analyst") # Route Node 1 to Node 2
-workflow.add_edge("fundamental_analyst", END)               # Route Node 2 to End
+workflow.add_edge("news_researcher", "fundamental_analyst")
+workflow.add_edge("fundamental_analyst", "synthesis_analyst") # Route Node 2 to Node 3
+workflow.add_edge("synthesis_analyst", END)                  # Route Node 3 to End
 
 # 4. Compile into a runnable application
 fin_sentinel_engine = workflow.compile()
-print("⚙️  [Engine] LangGraph State Machine updated to multi-agent sequential pipeline.")
+print("⚙️  [Engine] LangGraph State Machine updated to a 3-Agent Pipeline.")

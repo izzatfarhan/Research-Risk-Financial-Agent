@@ -57,11 +57,11 @@ async def analyze_ticker(payload: TickerRequest):
     try:
         final_state = fin_sentinel_engine.invoke(initial_state)
         return {
-          "success": True,
+            "success": True,
             "ticker": final_state["ticker"],
             "sentiment_metrics": final_state["sentiment_metrics"],
-            "fundamental_metrics": final_state["extracted_metrics"], # Stream the new node's outputs
-            "raw_news_extracted": final_state["raw_news"]
+            "fundamental_metrics": final_state["extracted_metrics"],
+            "investment_memo": final_state["final_memo"]  # New block added
         }
     except Exception as e:
         print(f"❌ [API Error] Graph execution failed: {str(e)}")

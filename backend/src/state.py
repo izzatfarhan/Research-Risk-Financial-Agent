@@ -5,12 +5,11 @@ from typing import TypedDict, List, Dict, Any
 from pydantic import BaseModel, Field
 
 # This is the strict JSON schema we want our final output to conform to
-class InvestmentMemo(BaseModel):
-    ticker: str = Field(description="The stock ticker symbol")
-    company_name: str = Field(description="Full company name")
-    market_sentiment: str = Field(description="Summary of current news sentiment")
-    key_metrics: Dict[str, Any] = Field(description="Financial metrics like P/E ratio, revenue growth")
-    investment_thesis: str = Field(description="Final buy/sell/hold justification")
+class InvestmentMemoSchema(BaseModel):
+    executive_summary: str = Field(description="A concise 2-3 sentence overview of the company's current position.")
+    sentiment_analysis: str = Field(description="Interpretation of why the market sentiment is skewed based on recent events.")
+    fundamental_health: str = Field(description="Evaluation of the valuation ratios and growth metrics.")
+    risk_rating: str = Field(description="LOW, MEDIUM, or HIGH risk classification with a brief justification.")
 
 # This is the state passed between nodes in LangGraph
 class FinancialState(TypedDict):

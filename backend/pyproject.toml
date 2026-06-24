@@ -17,4 +17,8 @@ dependencies = [
     "requests>=2.32.0",
     "yfinance>=0.2.68",
     "langchain-tavily>=0.2.18",
+    "langchain-google-genai>=4.2.5",
+    "langchain-openrouter>=0.2.4",
+    "transformers>=5.12.1",
+    "torch>=2.12.1",
 ]
