@@ -45,19 +45,21 @@ async def analyze_ticker(payload: TickerRequest):
     print(f"\n📥 [API] Received analysis request for ticker: {ticker_upper}")
     
     # Initialize the base state to feed into the graph
-    initial_state = {
+    initial_state = {  
+    
         "ticker": ticker_upper,
         "raw_news": [],
         "extracted_metrics": {},
+        "sentiment_metrics": {"positive": 0.0, "negative": 0.0, "neutral": 0.0}, # Init structure
         "final_memo": {}
     }
     
     try:
-        # Run the state machine synchronously for now
         final_state = fin_sentinel_engine.invoke(initial_state)
         return {
             "success": True,
             "ticker": final_state["ticker"],
+            "sentiment_metrics": final_state["sentiment_metrics"],  # Returns the model metrics
             "raw_news_extracted": final_state["raw_news"]
         }
     except Exception as e:
