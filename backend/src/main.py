@@ -46,8 +46,8 @@ async def analyze_ticker(payload: TickerRequest):
     
     # Initialize the base state to feed into the graph
     initial_state = {  
-    
-        "ticker": ticker_upper,
+        "user_query": ticker_upper,
+        "ticker": "",
         "raw_news": [],
         "extracted_metrics": {},
         "sentiment_metrics": {"positive": 0.0, "negative": 0.0, "neutral": 0.0}, # Init structure

@@ -13,6 +13,7 @@ class InvestmentMemoSchema(BaseModel):
 
 # This is the state passed between nodes in LangGraph
 class FinancialState(TypedDict):
+    user_query: str
     ticker: str
     raw_news: List[str]
     extracted_metrics: Dict[str, Any]

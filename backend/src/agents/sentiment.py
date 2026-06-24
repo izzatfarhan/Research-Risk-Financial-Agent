@@ -44,14 +44,18 @@ def news_research_node(state: FinancialState) -> Dict[str, Any]:
 
         # 2. Feed text snippets into our local Hugging Face model
         print(f"🧠 [HF Model] Analyzing {len(text_snippets)} financial text blocks...")
-        hf_outputs = sentiment_pipeline(text_snippets)
+        # Add top_k=None to get the full probability distribution for each snippet
+        hf_outputs = sentiment_pipeline(text_snippets, top_k=None)
         
         # 3. Calculate average scores to pass to the next agent node
         scores = {"positive": 0.0, "negative": 0.0, "neutral": 0.0}
-        for output in hf_outputs:
-            label = output['label'].lower()  # 'positive', 'negative', 'neutral'
-            score = output['score']          # Confidence weight (0.0 to 1.0)
-            scores[label] += score
+        
+        # hf_outputs is now a list of lists of dicts
+        for snippet_outputs in hf_outputs:
+            for output in snippet_outputs:
+                label = output['label'].lower()  # 'positive', 'negative', 'neutral'
+                score = output['score']          # Confidence weight (0.0 to 1.0)
+                scores[label] += score
             
         # Average the values
         total_items = len(text_snippets)
