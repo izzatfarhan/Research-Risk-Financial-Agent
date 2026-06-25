@@ -7,8 +7,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 # Ensure environment variables load for the server instance
-root_dir = Path(__file__).resolve().parent.parent.parent
-load_dotenv(dotenv_path=root_dir / ".env")
+backend_dir = Path(__file__).resolve().parent.parent
+load_dotenv(dotenv_path=backend_dir / ".env")
 
 # Import your compiled LangGraph engine
 from src.graph import fin_sentinel_engine
@@ -47,7 +47,7 @@ async def analyze_ticker(payload: TickerRequest):
     # Initialize the base state to feed into the graph
     initial_state = {  
         "user_query": ticker_upper,
-        "ticker": "",
+        "ticker": ticker_upper,
         "raw_news": [],
         "extracted_metrics": {},
         "sentiment_metrics": {"positive": 0.0, "negative": 0.0, "neutral": 0.0}, # Init structure
