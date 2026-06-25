@@ -18,4 +18,5 @@ class FinancialState(TypedDict):
     raw_news: List[str]
     extracted_metrics: Dict[str, Any]
     sentiment_metrics: Dict[str, float]  # New: To store averaged scores like {"positive": 0.7, "negative": 0.1, ...}
+    risk_analysis: List[str]  # New: Ingests text extracted from your PDF via Vector DB
     final_memo: Dict[str, Any]

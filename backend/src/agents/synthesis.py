@@ -11,7 +11,11 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Initialize the LLM (Requires GOOGLE_API_KEY in your .env)
 # We set temperature=1.0 because we want analytical, deterministic writing, not creative prose.
-llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash", temperature=1.0)  
+llm = ChatGoogleGenerativeAI(
+    model="gemini-3.1-flash-lite",  # 3 series can use thinking level
+    thinking_level = THINKING_LEVEL,
+    api_key=GEMINI_API_KEY
+)  
 structured_llm = llm.with_structured_output(InvestmentMemoSchema)
 
 def synthesis_analyst_node(state: FinancialState) -> Dict[str, Any]:

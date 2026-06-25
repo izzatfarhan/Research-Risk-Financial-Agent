@@ -50,11 +50,16 @@ def news_research_node(state: FinancialState) -> Dict[str, Any]:
         # 3. Calculate average scores to pass to the next agent node
         scores = {"positive": 0.0, "negative": 0.0, "neutral": 0.0}
         
-        # hf_outputs is now a list of lists of dicts
-        for snippet_outputs in hf_outputs:
-            for output in snippet_outputs:
-                label = output['label'].lower()  # 'positive', 'negative', 'neutral'
-                score = output['score']          # Confidence weight (0.0 to 1.0)
+        # hf_outputs might be a list of lists OR a list of dicts depending on the pipeline configuration
+        for item in hf_outputs:
+            if isinstance(item, list):
+                for output in item:
+                    label = output['label'].lower()
+                    score = output['score']
+                    scores[label] += score
+            elif isinstance(item, dict):
+                label = item['label'].lower()
+                score = item['score']
                 scores[label] += score
             
         # Average the values
